@@ -2,7 +2,7 @@
 Frontend-only, independently made **website concept**, NOT the café's official website. Created for the 100 Days Local Business Website Challenge. Replaces the earlier Marleo concept in Day-15.
 
 ## Design system
-Industrial Northern Quarter inspiration, editorial typography, deep green, terracotta and concrete tones. Core journeys: quickly understand the café, browse real menu categories without invented prices, understand the atmosphere, get directions or open its Instagram.
+Industrial Northern Quarter inspiration, editorial typography, deep green, terracotta and concrete tones. Core journeys: quickly understand the café, follow a three-route navigation strip, browse real menu categories without invented prices, understand the atmosphere, get directions or open its Instagram.
 
 ## Run
 Open index.html in VS Code Live Server or any static local server. GitHub Pages should serve main / root. No npm, server or API keys required.
