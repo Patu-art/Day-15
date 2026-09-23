@@ -1,34 +1,54 @@
-# Day 15 — Nomad Coffee (Manchester)
-Frontend-only, independently made **website concept**, NOT the café's official website. Created for the 100 Days Local Business Website Challenge. Replaces the earlier Marleo concept in Day-15.
+# Nomad Coffee — Day 15 independent concept
 
-## Design system
-Industrial Northern Quarter inspiration, editorial typography, deep green, terracotta and concrete tones. Core journeys: quickly understand the café, follow a three-route navigation strip, browse real menu categories without invented prices, understand the atmosphere, get directions or open its Instagram.
+**An unofficial frontend-only concept for the independent coffee shop at 24 Lever Street, Manchester, built for the 100 Days Challenge. This is not the business's website or an offer made on its behalf.**
 
-## Run
-Open index.html in VS Code Live Server or any static local server. GitHub Pages should serve main / root. No npm, server or API keys required.
+## Design
 
-## Structure
-- index.html: semantic homepage, metadata, accessible navigation and real links.
-- css/style.css: component styles, fluid grids, responsive breakpoints, focus states, reduced-motion fallback.
-- js/main.js: functional mobile menu, 3-way menu-highlight selector, scroll indicator and progressive reveal.
-- assets/nomad/{interior,coffee,sandwich,pastry}.webp: local **illustrative Unsplash stock photography**; NOT photographs of Nomad's venue or exact items.
-- assets/nomad/favicon.svg: locally authored icon.
-- .github/workflows/site-qa.yml: automated responsive browser QA.
+Nomad is set in Manchester's Northern Quarter, in a spacious industrial café with exposed brickwork and large windows. The earlier green/orange design felt like a generic coffee landing page. This revision draws from Lever Street's former textile/warehouse setting: warm limestone paper, brick ink, architectural window geometry, serif editorial headings and precise utilitarian monospace labels. This is an **interpretation**, not a claim to reproduce Nomad's actual branding, fonts or signage.
 
-## Verified public background (23 Sept 2026)
-Nomad Coffee, 24 Lever Street, Manchester M1 1DW. Coffee, sandwiches and pastries; published sources describe large windows, exposed brick and space to sit. Independently check new opening hours, items and services directly with the owner before handover. Instagram handle @nomadcoffeemanc is listed in directory coverage but owner verification is still required.
+The site prioritizes a short visitor journey: understand the café → browse representative coffee/food categories → see the space concept → get accurate directions. No generic filler sections, fake awards, invented prices, online bookings or fabricated customer testimonials.
 
-Research:
-- https://tasteofmanchester.com/news/brews-all-round-nomad-coffee-opens-on-lever-street-in-the-northern-quarter/
-- https://www.manchestersfinest.com/places/nomad/
-- https://thatsup.co.uk/manchester/cafe/nomad-coffee
-- https://propercoffee.app/manchester/nomad-coffee
-- https://www.thehandbook.com/things-to-do-in-manchester-uk/ (lists nomadcoffee.com but this site's ownership/association with the Manchester venue could not be independently verified; verify directly before pitching a "no website" claim).
+## File map
 
-## Stock photography and commercial handover
-All four local images are sample images obtained via images.unsplash.com under https://unsplash.com/license. They do **not** show Nomad's real interior or dishes. The hero, food highlight, space and visit alt text and footer disclose that. Replace them with authorised real brand/venue photos before claiming this is an official site. In particular, illustrative cafe interiors must not be presented as genuine photographs of the venue.
+- \`index.html\` — semantic page, metadata, clearly labelled illustrative images, venue location, real external navigation.
+- \`css/style.css\` — self-contained design system with desktop, tablet and narrow mobile breakpoints, keyboard focus and reduced-motion styles.
+- \`js/main.js\` — accessible mobile menu with Escape, genuinely functional food highlights and an optional scroll-progress effect.
+- \`assets/nomad/\` — **locally hosted** optimized concept images and authored favicon; source scripts and private credentials are not shipped.
+- \`QA_REPORT.md\` — scripted browser and automated WCAG results.
+- \`DEPLOYMENT_REPORT.md\` — independently queried public GitHub Pages smoke test.
+- \`PERFORMANCE_REPORT.md\` — locally simulated Lighthouse results, if workflow completes.
+- \`.github/workflows/site-qa.yml\` — automated Chromium/axe regressions and screenshot artifacts.
+- \`.github/workflows/deployment-smoke.yml\` — public deployment smoke test.
+- \`.github/workflows/performance-audit.yml\` — local Lighthouse report generation.
 
-Do not invent prices, operating hours, reviews, bookings, food composition or offers. Confirm the actual business's domain status, brand assets, location, menu/allergens and Instagram with the owner prior to outreach/commercial handover.
+## Run and publish
 
-## QA
-Run the GitHub Actions site QA. Inspect 320, 390, 768 and 1440 px views, mobile nav, anchor links, selector, complete local images, browser errors and reduced motion. Do not claim final deploy QA passed until the workflow proves it.
+Open \`index.html\` via VS Code Live Server or another simple HTTP server. The same root is deployed using GitHub Pages at https://patu-art.github.io/Day-15/. No npm, backend, authentication, database, API keys or remote images are required **at runtime**.
+
+The demo has \`noindex,nofollow\` metadata because it is not owner-authorized and should not compete with the café in search results. Production SEO (crawlability, official structured data, business ownership, canonical, approved OG image) must be implemented **after** owner permission, not misrepresented as finished here.
+
+## Confirmed and outstanding business research
+
+- Taste of Manchester (19 Dec 2024): https://tasteofmanchester.com/news/brews-all-round-nomad-coffee-opens-on-lever-street-in-the-northern-quarter/
+- Current listing for 24 Lever St: https://thatsup.co.uk/manchester/cafe/nomad-coffee
+- 24 Lever Street building story / former textile factory: https://www.sheilabird.com/work/24-lever-street/
+
+**Eligibility is not conclusively settled:** An online guide attributes \`nomadcoffee.com\` to the Manchester business (https://www.thehandbook.com/things-to-do-in-manchester-uk/), but I did not establish the domain's ownership or that it actually belongs to the Lever Street venue. Independently check the business's Instagram bio/owner or business directory ownership before making ANY "you have no website" sales claim. Similar-named Nomad Coffee operations elsewhere must not be conflated with this venue.
+
+Nomad's exact opening hours, current menu, dietary information, accessibility details, social handle and photo usage rights should be confirmed with the business prior to handover. Until then this is an independent, noncommercial mockup.
+
+## Stock-photo disclosure and owner content
+
+The interior, coffee, sandwich and pastry WebP files are **illustrative Unsplash stock**, not photographs of Nomad, its staff, premises, exact drinks or food. The visual is editorial reference only. The page discloses this in the hero, menu and footer; image alt text also makes the distinction. The local stock downloads were taken from images.unsplash.com under https://unsplash.com/license.
+
+Before pitching the design as ready for the actual business, seek permission to use real business photography and identifiable marks, replace images with verified owner-approved compressed images, correct all descriptive details, and remove stock disclaimers only after replacement. Do not scrape or download the business's Instagram media without rights to reuse it.
+
+## Security / privacy constraints
+
+The page is static, without third-party runtime scripts, analytics, cookies, databases, user-controlled HTML rendering, email capture or client credentials. A restrictive **meta** Content Security Policy applies to scripts, styles and images. Real HTTP response security headers such as HSTS and frame-ancestors cannot be set per-site by a GitHub Pages repository's HTML; a controlled reverse proxy/host is needed if the owner requires them.
+
+Publicly deployed HTML, CSS, JS and images **cannot be made uncopyable**. Keep secrets and write operations server-side if a backend is commissioned in future; do not pretend CSS anti-select or obfuscation is security.
+
+## SITEPRO release gate
+
+The technical concept can be complete independently; the **commercial SITEPRO handover** remains blocked by (1) verifying no official site already belongs to the venue, (2) owner-approved authentic photos and identity, and (3) owner-confirmed current business and menu details. Those require business cooperation and cannot be honestly checked off by code alone. Review \`SITEPRO_AUDIT.md\` for a section-by-section record.
