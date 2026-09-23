@@ -57,10 +57,14 @@ jobs:
               }
               await page.evaluate(()=>document.querySelectorAll('.reveal').forEach(e=>e.classList.add('is-visible')));
               await page.locator('.filter[data-filter="all"]').click();
+              await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,0)});
+              await page.waitForTimeout(90);
               if(width===1440)await page.screenshot({path:'qa/screenshots/desktop.png',fullPage:true,animations:'disabled'});
               if(width===1440)await page.screenshot({path:'qa/screenshots/desktop-preview.jpg',type:'jpeg',quality:44,animations:'disabled'});
+              if(width===1440)await page.screenshot({path:'qa/screenshots/desktop-overview.jpg',type:'jpeg',quality:35,fullPage:true,animations:'disabled'});
               if(width===390)await page.screenshot({path:'qa/screenshots/mobile.png',fullPage:true,animations:'disabled'});
               if(width===390)await page.screenshot({path:'qa/screenshots/mobile-preview.jpg',type:'jpeg',quality:48,animations:'disabled'});
+              if(width===390)await page.screenshot({path:'qa/screenshots/mobile-overview.jpg',type:'jpeg',quality:38,fullPage:true,animations:'disabled'});
               await page.close();
               console.log('CHECK '+width+'px '+JSON.stringify({overflow:state.overflow,images:state.img.length,css:state.css}));
             }
