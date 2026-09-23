@@ -36,6 +36,9 @@ jobs:
           download "Potenza - Fabio's 2026-02-12.jpg" "focaccia-candidate.jpg"
           download "Focaccia sandwiches for sale on the counter of Fabio's 2026-02-12.jpg" "focaccia-counter-candidate.jpg"
           download "Cannoli siciliani (edited).jpg" "cannoli-candidate.jpg"
+          download "Arancini Al Ragu' - Giuseppes 2026-06-11.jpg" "arancini-candidate-a.jpg"
+          download "Arancini (veggie) - Nanninella 2025-10-21.jpg" "arancini-candidate-b.jpg"
+          download "Cannoli siciliani (7472226896).jpg" "cannoli-candidate-b.jpg"
       - name: Commit photos and diagnostics
         shell: bash
         run: |
