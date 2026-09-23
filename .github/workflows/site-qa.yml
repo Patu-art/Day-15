@@ -8,7 +8,7 @@ on:
       - "js/**"
       - "assets/photos/**"
 permissions:
-  contents: write
+  contents: read
 jobs:
   qa:
     runs-on: ubuntu-latest
@@ -73,22 +73,12 @@ jobs:
             console.log('PASS: desktop, tablet, mobile, navigation, filters, local images, CSS, JS errors, horizontal overflow');
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
-      - name: Save failed QA diagnostics
-        if: failure()
-        shell: bash
-        run: |
-          mkdir -p qa
-          if [ ! -f qa/qa-run.log ]; then echo "Browser setup failed before script execution; check workflow job." > qa/qa-run.log; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add qa/qa-run.log
-          git diff --cached --quiet || (git commit -m "Record browser QA failure diagnostics" && git pull --rebase origin main && git push)
-      - name: Save passing QA results
-        run: |
-          printf '%s\n' '# Site QA — PASS' '' 'Playwright Chromium tested 1440, 768, 390 and 320 px.' 'Verified CSS loading, all six local photographs, horizontal overflow, menu filters, mobile navigation and absence of page errors.' 'Screenshots are illustrative review evidence; owner-approved photography and details still required.' > qa/QA_REPORT.md
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add qa
-          git commit -m "Verify Day 15 responsive behaviour in Chromium and capture QA previews"
-          git pull --rebase origin main
-          git push
+      - name: Publish browser test report and visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitepro-day15-browser-qa
+          path: |
+            qa/qa-run.log
+            qa/screenshots/
+          if-no-files-found: warn
