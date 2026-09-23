@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install browser
         run: |
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
           npx playwright install chromium
       - name: Test responsive layout and interactions
         shell: bash
@@ -48,12 +48,14 @@ jobs:
                 errors.push(width+' overflow '+state.overflow+' offenders '+JSON.stringify(offenders));
               }
               if(state.images.some(i=>!i.loaded))errors.push(width+' image fail '+JSON.stringify(state.images.filter(i=>!i.loaded)));
-              if(state.images.length!==4)errors.push(width+' expected 4 loaded page image elements');
+              if(state.images.length!==3)errors.push(width+' expected 3 locally hosted page image elements');
               if(state.missingAnchors.length)errors.push(width+' unresolved anchors '+state.missingAnchors);
-              if(!state.css.startsWith('rgb(33, 59, 50)'))errors.push(width+' CSS missing '+state.css);
+              if(!state.css.startsWith('rgb(239, 233, 219)'))errors.push(width+' CSS missing '+state.css);
               await page.locator('.offer-tab[data-offer="food"]').click();
+              if(!(await page.locator('#offer-image').evaluate(img=>img.decode().then(()=>img.naturalWidth>0).catch(()=>false))))errors.push(width+' food photo did not load');
               if(!(await page.locator('#offer-name').innerText()).includes('A good'))errors.push(width+' food selector failed');
               await page.locator('.offer-tab[data-offer="sweet"]').click();
+              if(!(await page.locator('#offer-image').evaluate(img=>img.decode().then(()=>img.naturalWidth>0).catch(()=>false))))errors.push(width+' sweet photo did not load');
               if(!(await page.locator('#offer-name').innerText()).includes('One more'))errors.push(width+' sweet selector failed');
               await page.locator('.offer-tab[data-offer="coffee"]').click();
               if(width<=820){
@@ -69,12 +71,21 @@ jobs:
               await page.waitForTimeout(650);await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo({top:0,behavior:'instant'})});await page.waitForTimeout(180);
               if(width===1440){await page.screenshot({path:'qa/screenshots/desktop.jpg',type:'jpeg',quality:45,fullPage:true,animations:'disabled'});await page.screenshot({path:'qa/screenshots/desktop-fold.jpg',type:'jpeg',quality:65,animations:'disabled'});}
               if(width===390){await page.screenshot({path:'qa/screenshots/mobile.jpg',type:'jpeg',quality:48,fullPage:true,animations:'disabled'});await page.screenshot({path:'qa/screenshots/mobile-fold.jpg',type:'jpeg',quality:65,animations:'disabled'});}
+              if(width===1440||width===390){
+                const axeSource=require('fs').readFileSync(require.resolve('axe-core/axe.min.js'),'utf8');
+                await page.route('**/sitepro-axe.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:axeSource}));
+                await page.addScriptTag({url:'http://127.0.0.1:8765/sitepro-axe.js'});
+                const audit=await page.evaluate(()=>axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']}}));
+                const serious=audit.violations.filter(v=>['critical','serious'].includes(v.impact));
+                console.log('AXE',width,JSON.stringify(audit.violations.map(v=>({id:v.id,impact:v.impact,affected:v.nodes.length}))));
+                if(serious.length)errors.push(width+' serious WCAG findings '+JSON.stringify(serious.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target).slice(0,6)}))));
+              }
               console.log('CHECK',width,JSON.stringify({overflow:state.overflow,images:state.images.length,css:state.css}));
               await page.close();
             }
             await browser.close();
             if(errors.length)throw Error(errors.join('\n'));
-            console.log('PASS Nomad UI at 1440,1024,768,390,375,320; all four images; no overflow; JS; anchors; mobile nav; selectors.');
+            console.log('PASS Nomad UI at 1440,1024,768,390,375,320; all 3 displayed images and all 3 menu states; no overflow; JS; anchors; mobile nav; selectors.');
           })().catch(e=>{console.error(e);process.exit(1)})
           NODE
       - name: Publish QA result and previews
@@ -86,11 +97,19 @@ jobs:
             qa/qa-run.log
             qa/screenshots/
           if-no-files-found: warn
+      - name: Commit visual review screenshots
+        if: success()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add qa/screenshots/desktop-fold.jpg qa/screenshots/mobile-fold.jpg qa/screenshots/desktop.jpg qa/screenshots/mobile.jpg
+          git diff --cached --quiet || (git commit -m "Capture revised Nomad concept visual audit" && git pull --rebase origin main && git push)
       - name: Commit passing QA report
         if: success()
         shell: bash
         run: |
-          printf '%s\n' '# Nomad website browser QA — PASS' '' 'Chromium tested 1440, 1024, 768, 390, 375 and 320 px.' 'All four locally stored photos, CSS load, anchor links, functional coffee selector, keyboard and mobile navigation, no JS exceptions or horizontal overflow.' 'Concept photos are not actual Nomad Coffee venue or products. Owner approval and live-site check required before handover.' > QA_REPORT.md
+          printf '%s\n' '# Nomad website browser QA — PASS' '' 'Chromium tested 1440, 1024, 768, 390, 375 and 320 px.' 'All three displayed local image elements and all menu photo states, CSS, anchor links, keyboard and mobile navigation, no JS exceptions or horizontal overflow.' 'Concept photos are not actual Nomad Coffee venue or products. Owner approval and live-site check required before handover.' > QA_REPORT.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add QA_REPORT.md
