@@ -1,0 +1,65 @@
+name: Audit local Lighthouse performance
+on:
+  push:
+    paths:
+      - ".github/workflows/performance-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install audit tools
+        run: |
+          npm install --no-save lighthouse@11.7.1 playwright@1.55.0
+          npx playwright install chromium
+      - name: Run mobile Lighthouse (local preview)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qa
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/nomad-lighthouse-server.log 2>&1 &
+          sleep 3
+          chrome="$(find "$HOME/.cache/ms-playwright" -name chrome -type f -print -quit)"
+          test -x "$chrome"
+          export CHROME_PATH="$chrome"
+          npx lighthouse "http://127.0.0.1:8765/" --output=json --output-path=qa/lighthouse-mobile.json --only-categories=performance,accessibility,best-practices,seo --chrome-flags="--headless=new --no-sandbox --disable-dev-shm-usage" --quiet
+          node <<'NODE'
+          const fs=require('fs');
+          const lhr=JSON.parse(fs.readFileSync('qa/lighthouse-mobile.json','utf8'));
+          const score=key=>Math.round(lhr.categories[key].score*100);
+          const aud=key=>lhr.audits[key]?.displayValue||'n/a';
+          const report=[
+            '# Day 15 — local Lighthouse mobile audit','',
+            'Source commit: '+process.env.GITHUB_SHA,
+            'This is one simulated mobile run against a localhost static preview. It is not a field Core Web Vitals measurement or a guarantee for the public deployment.','',
+            '- Performance: '+score('performance')+'/100',
+            '- Accessibility: '+score('accessibility')+'/100',
+            '- Best practices: '+score('best-practices')+'/100',
+            '- SEO: '+score('seo')+'/100 (the unofficial concept deliberately uses noindex; do not treat this as launch SEO).',
+            '- LCP: '+aud('largest-contentful-paint'),
+            '- CLS: '+aud('cumulative-layout-shift'),
+            '- TBT: '+aud('total-blocking-time'),'',
+            'Full Lighthouse JSON is retained in the GitHub Actions artifact. Performance scores vary by run and device.'
+          ].join('\n')+'\n';
+          fs.writeFileSync('PERFORMANCE_REPORT.md',report);
+          console.log(report);
+          NODE
+      - name: Publish full Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nomad-local-lighthouse-mobile
+          path: qa/lighthouse-mobile.json
+          if-no-files-found: warn
+      - name: Commit measured performance result
+        if: success()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PERFORMANCE_REPORT.md
+          git diff --cached --quiet || (git commit -m "Document measured Nomad Lighthouse mobile performance" && git pull --rebase origin main && git push)
