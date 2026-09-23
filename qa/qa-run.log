@@ -1,6 +1,5 @@
 CHECK 1440px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
 CHECK 768px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
 CHECK 390px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
-CHECK 320px {"overflow":16,"images":6,"css":"rgb(255, 240, 166)"}
-Error: 320 horizontal overflow 16px offenders=[{"tag":"DIV","cls":"ticker-track","right":1879,"left":-3},{"tag":"SPAN","cls":"","right":938,"left":-3},{"tag":"I","cls":"","right":343,"left":288},{"tag":"I","cls":"","right":508,"left":453},{"tag":"I","cls":"","right":662,"left":607},{"tag":"I","cls":"","right":938,"left":883},{"tag":"SPAN","cls":"","right":1879,"left":938},{"tag":"I","cls":"","right":1112,"left":1057},{"tag":"I","cls":"","right":1284,"left":1229},{"tag":"I","cls":"","right":1449,"left":1394},{"tag":"I","cls":"","right":1603,"left":1548},{"tag":"I","cls":"","right":1879,"left":1824},{"tag":"SPAN","cls":"story-image-label","right":334,"left":109},{"tag":"DIV","cls":"story-copy reveal","right":325,"left":20},{"tag":"DIV","cls":"section-index","right":325,"left":20},{"tag":"P","cls":"small-caps","right":325,"left":20},{"tag":"H2","cls":"","right":325,"left":20},{"tag":"EM","cls":"","right":325,"left":20},{"tag":"BR","cls":"","right":325,"left":325},{"tag":"P","cls":"","right":325,"left":20}]
-    at [stdin]:38:26
+CHECK 320px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
+PASS: desktop, tablet, mobile, navigation, filters, local images, CSS, JS errors, horizontal overflow
