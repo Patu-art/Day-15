@@ -66,7 +66,7 @@ jobs:
                 if(await page.locator('#nav-toggle').getAttribute('aria-expanded')!=='false')errors.push(width+' link close failed');
               }
               await page.evaluate(()=>{document.querySelectorAll('.reveal').forEach(e=>e.classList.add('is-visible'));document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,0)});
-              await page.waitForTimeout(100);
+              await page.waitForTimeout(650);await page.evaluate(()=>{document.documentElement.style.scrollBehavior='auto';window.scrollTo({top:0,behavior:'instant'})});await page.waitForTimeout(180);
               if(width===1440){await page.screenshot({path:'qa/screenshots/desktop.jpg',type:'jpeg',quality:45,fullPage:true,animations:'disabled'});await page.screenshot({path:'qa/screenshots/desktop-fold.jpg',type:'jpeg',quality:65,animations:'disabled'});}
               if(width===390){await page.screenshot({path:'qa/screenshots/mobile.jpg',type:'jpeg',quality:48,fullPage:true,animations:'disabled'});await page.screenshot({path:'qa/screenshots/mobile-fold.jpg',type:'jpeg',quality:65,animations:'disabled'});}
               console.log('CHECK',width,JSON.stringify({overflow:state.overflow,images:state.images.length,css:state.css}));
