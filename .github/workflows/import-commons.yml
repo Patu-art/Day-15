@@ -39,6 +39,8 @@ jobs:
           download "Arancini Al Ragu' - Giuseppes 2026-06-11.jpg" "arancini-candidate-a.jpg"
           download "Arancini (veggie) - Nanninella 2025-10-21.jpg" "arancini-candidate-b.jpg"
           download "Cannoli siciliani (7472226896).jpg" "cannoli-candidate-b.jpg"
+          download "Panino prosciutteria.jpg" "focaccia-candidate-b.jpg"
+          download "Sandwich with vegan cheese, tomatoes and basil.jpg" "focaccia-candidate-c.jpg"
       - name: Commit photos and diagnostics
         shell: bash
         run: |
