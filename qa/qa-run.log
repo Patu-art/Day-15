@@ -1,5 +1,0 @@
-CHECK 1440px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
-CHECK 768px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
-CHECK 390px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
-CHECK 320px {"overflow":0,"images":6,"css":"rgb(255, 240, 166)"}
-PASS: desktop, tablet, mobile, navigation, filters, local images, CSS, JS errors, horizontal overflow

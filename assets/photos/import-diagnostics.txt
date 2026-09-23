@@ -1,6 +1,0 @@
-Fetching focaccia-real, Unsplash photo ID UFv76iOCKmA
-FAIL no URL for focaccia-real
-Fetching arancini-real, Unsplash photo ID M3Vax7A5Hac
-FAIL no URL for arancini-real
-Fetching cannoli-real, Unsplash photo ID zZj6oQwhhTs
-FAIL no URL for cannoli-real

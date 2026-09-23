@@ -10,7 +10,7 @@ Open `index.html` using VS Code Live Server or any static HTTP server. GitHub Pa
 - `css/style.css` — theme, custom UI, fluid grid, breakpoints, motion and reduced-motion fallbacks.
 - `js/main.js` — mobile navigation, real menu highlight filters, progressive scroll reveals and progress indicator.
 - `assets/favicon.svg` — authored local vector favicon.
-- `assets/photos/` — locally hosted illustrative photo assets. Only six final sources are referenced by the page; other research candidates and original stock downloads are temporary, not website dependencies.
+- `assets/photos/` — locally hosted illustrative photo assets. Only six locally hosted, appropriately credited image files are present.
 - `.github/workflows/site-qa.yml` — GitHub Actions browser QA, see its recorded report when successful.
 
 ## Brand, factual details, and limitations
@@ -21,10 +21,10 @@ The descriptions of focaccia, arancini, cannoli and coffee are editorial menu hi
 **Photography is illustrative, NOT imagery of Marleo's own products or venue.** The site displays this warning and provides licensing credits. Replace with owner-approved, appropriately sized Marleo photos before commercial handover.
 
 ## Photographic assets and licenses
-- Hero, `focaccia-candidate-c.jpg`: [focaccia sandwich with vegan cheese, tomatoes and basil by Anna Korcheva](https://commons.wikimedia.org/wiki/File:Sandwich_with_vegan_cheese,_tomatoes_and_basil.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Displayed with responsive CSS cropping; photo is illustrative and does **not** show Mortazza menu ingredients.
-- Focaccia highlight, `focaccia-candidate.jpg`: [Potenza from Fabio's café](https://commons.wikimedia.org/wiki/File:Potenza_-_Fabio%27s_2026-02-12.jpg), Wikimedia Commons CC0 dedication. This photo shows food from **a different café**, not Marleo.
-- Arancini highlight, `arancini-candidate-b.jpg`: [Arancini (veggie) from Nanninella](https://commons.wikimedia.org/wiki/File:Arancini_(veggie)_-_Nanninella_2025-10-21.jpg), Wikimedia Commons CC0 dedication. Food from **a different restaurant**.
-- Cannoli highlight, `cannoli-candidate-b.jpg`: [Sicilian cannoli by mat's eye](https://commons.wikimedia.org/wiki/File:Cannoli_siciliani_(7472226896).jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), displayed with responsive CSS cropping.
+- Hero, `hero-focaccia.jpg`: [focaccia sandwich with vegan cheese, tomatoes and basil by Anna Korcheva](https://commons.wikimedia.org/wiki/File:Sandwich_with_vegan_cheese,_tomatoes_and_basil.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Displayed with responsive CSS cropping; photo is illustrative and does **not** show Mortazza menu ingredients.
+- Focaccia highlight, `menu-focaccia.jpg`: [Potenza from Fabio's café](https://commons.wikimedia.org/wiki/File:Potenza_-_Fabio%27s_2026-02-12.jpg), Wikimedia Commons CC0 dedication. This photo shows food from **a different café**, not Marleo.
+- Arancini highlight, `menu-arancini.jpg`: [Arancini (veggie) from Nanninella](https://commons.wikimedia.org/wiki/File:Arancini_(veggie)_-_Nanninella_2025-10-21.jpg), Wikimedia Commons CC0 dedication. Food from **a different restaurant**.
+- Cannoli highlight, `menu-cannoli.jpg`: [Sicilian cannoli by mat's eye](https://commons.wikimedia.org/wiki/File:Cannoli_siciliani_(7472226896).jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), displayed with responsive CSS cropping.
 - Coffee `coffee.webp` and bread `bread.webp`: locally hosted stock photography downloaded from Unsplash, subject to the [Unsplash License](https://unsplash.com/license). Both are illustrative; not brand photography.
 
 ## QA / handover checklist
