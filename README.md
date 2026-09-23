@@ -1,42 +1,34 @@
-# Day 15 — Marleo Little Sicily
+# Day 15 — Nomad Coffee (Manchester)
+Frontend-only, independently made **website concept**, NOT the café's official website. Created for the 100 Days Local Business Website Challenge. Replaces the earlier Marleo concept in Day-15.
 
-An independently made, frontend-only SITEPRO concept website for Marleo Little Sicily, Manchester, created for the 100 Days Local Business Website Challenge. This is **not an official Marleo website**.
+## Design system
+Industrial Northern Quarter inspiration, editorial typography, deep green, terracotta and concrete tones. Core journeys: quickly understand the café, browse real menu categories without invented prices, understand the atmosphere, get directions or open its Instagram.
 
-## Run and deploy
-Open `index.html` using VS Code Live Server or any static HTTP server. GitHub Pages serves from the repository root on the main branch. No npm install, external UI libraries, database, backend, credentials or API keys are required for the website.
+## Run
+Open index.html in VS Code Live Server or any static local server. GitHub Pages should serve main / root. No npm, server or API keys required.
 
-## Project structure
-- `index.html` — semantic content, SEO metadata, accessible labels and local image references.
-- `css/style.css` — theme, custom UI, fluid grid, breakpoints, motion and reduced-motion fallbacks.
-- `js/main.js` — mobile navigation, real menu highlight filters, progressive scroll reveals and progress indicator.
-- `assets/favicon.svg` — authored local vector favicon.
-- `assets/photos/` — locally hosted illustrative photo assets. Only six locally hosted, appropriately credited image files are present.
-- `.github/workflows/site-qa.yml` — GitHub Actions browser QA, see its recorded report when successful.
+## Structure
+- index.html: semantic homepage, metadata, accessible navigation and real links.
+- css/style.css: component styles, fluid grids, responsive breakpoints, focus states, reduced-motion fallback.
+- js/main.js: functional mobile menu, 3-way menu-highlight selector, scroll indicator and progressive reveal.
+- assets/nomad/{interior,coffee,sandwich,pastry}.webp: local **illustrative Unsplash stock photography**; NOT photographs of Nomad's venue or exact items.
+- assets/nomad/favicon.svg: locally authored icon.
+- .github/workflows/site-qa.yml: automated responsive browser QA.
 
-## Brand, factual details, and limitations
-Research snapshot: 23 September 2026. Independent 2026 news coverage reported Marleo's move from Pollard Yard to a Northern Quarter café. Some third-party online sources differ between **93** and **95 Oldham Street**. This concept uses **95 Oldham Street**, found on a current delivery listing. Verify the exact entrance/address and current opening hours directly with the owner before sharing as an official website.
+## Verified public background (23 Sept 2026)
+Nomad Coffee, 24 Lever Street, Manchester M1 1DW. Coffee, sandwiches and pastries; published sources describe large windows, exposed brick and space to sit. Independently check new opening hours, items and services directly with the owner before handover. Instagram handle @nomadcoffeemanc is listed in directory coverage but owner verification is still required.
 
-The descriptions of focaccia, arancini, cannoli and coffee are editorial menu highlights, not an exhaustive or live menu. The demo invents no prices, testimonials, promotions, reservation capacity or operating hours. The delivery menu link is a third-party platform and availability can change.
+Research:
+- https://tasteofmanchester.com/news/brews-all-round-nomad-coffee-opens-on-lever-street-in-the-northern-quarter/
+- https://www.manchestersfinest.com/places/nomad/
+- https://thatsup.co.uk/manchester/cafe/nomad-coffee
+- https://propercoffee.app/manchester/nomad-coffee
+- https://www.thehandbook.com/things-to-do-in-manchester-uk/ (lists nomadcoffee.com but this site's ownership/association with the Manchester venue could not be independently verified; verify directly before pitching a "no website" claim).
 
-**Photography is illustrative, NOT imagery of Marleo's own products or venue.** The site displays this warning and provides licensing credits. Replace with owner-approved, appropriately sized Marleo photos before commercial handover.
+## Stock photography and commercial handover
+All four local images are sample images obtained via images.unsplash.com under https://unsplash.com/license. They do **not** show Nomad's real interior or dishes. The hero, food highlight, space and visit alt text and footer disclose that. Replace them with authorised real brand/venue photos before claiming this is an official site. In particular, illustrative cafe interiors must not be presented as genuine photographs of the venue.
 
-## Photographic assets and licenses
-- Hero, `hero-focaccia.jpg`: [focaccia sandwich with vegan cheese, tomatoes and basil by Anna Korcheva](https://commons.wikimedia.org/wiki/File:Sandwich_with_vegan_cheese,_tomatoes_and_basil.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Displayed with responsive CSS cropping; photo is illustrative and does **not** show Mortazza menu ingredients.
-- Focaccia highlight, `menu-focaccia.jpg`: [Potenza from Fabio's café](https://commons.wikimedia.org/wiki/File:Potenza_-_Fabio%27s_2026-02-12.jpg), Wikimedia Commons CC0 dedication. This photo shows food from **a different café**, not Marleo.
-- Arancini highlight, `menu-arancini.jpg`: [Arancini (veggie) from Nanninella](https://commons.wikimedia.org/wiki/File:Arancini_(veggie)_-_Nanninella_2025-10-21.jpg), Wikimedia Commons CC0 dedication. Food from **a different restaurant**.
-- Cannoli highlight, `menu-cannoli.jpg`: [Sicilian cannoli by mat's eye](https://commons.wikimedia.org/wiki/File:Cannoli_siciliani_(7472226896).jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), displayed with responsive CSS cropping.
-- Coffee `coffee.webp` and bread `bread.webp`: locally hosted stock photography downloaded from Unsplash, subject to the [Unsplash License](https://unsplash.com/license). Both are illustrative; not brand photography.
+Do not invent prices, operating hours, reviews, bookings, food composition or offers. Confirm the actual business's domain status, brand assets, location, menu/allergens and Instagram with the owner prior to outreach/commercial handover.
 
-## QA / handover checklist
-1. Open the live GitHub Pages site and verify hero, menu images, CSS, all six image paths, menu filters, sticky nav, mobile menu close and contact/directions links.
-2. Validate 320 / 375 / 390 / 768 / 1024 / 1440 px screens, keyboard, Escape nav closing, visible focus, reduced motion, no horizontal overflow and readable copy.
-3. Inspect GitHub Actions site QA run and published report, or run the same Playwright script yourself. Browser QA success is only confirmed if that run reports success.
-4. Confirm address, Instagram handle, menu/allergens, latest prices, opening hours and site copy with the owner.
-5. Replace illustrative samples with owner-approved real assets under `assets/photos/`; preserve local paths; compress to WebP/JPEG and update alt text. Remove photo credits for photos no longer used only when appropriate.
-6. Ask permission before commercial use of Marleo brand identifiers, logo or real business content.
-
-## Research
-- https://themanc.com/eats/marleo-little-sicily-northern-quarter-manchester/
-- https://secretmanchester.com/marleo-sicilian-northern-quarter-manchester/
-- https://www.ubereats.com/gb/store/marleo-little-sicily/BJf3F6VOUtqgbUz4yNpkZA
-- https://marleo.co.uk/ (old Pollard Yard information; should not be used for the new premises)
+## QA
+Run the GitHub Actions site QA. Inspect 320, 390, 768 and 1440 px views, mobile nav, anchor links, selector, complete local images, browser errors and reduced motion. Do not claim final deploy QA passed until the workflow proves it.

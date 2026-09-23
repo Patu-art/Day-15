@@ -1,25 +1,24 @@
 "use strict";
 document.documentElement.classList.add("js");
-const menuButton=document.querySelector(".menu-toggle");
-const mobileMenu=document.getElementById("mobile-menu");
-function closeMenu(){if(!menuButton||!mobileMenu)return;menuButton.setAttribute("aria-expanded","false");menuButton.setAttribute("aria-label","Open navigation");mobileMenu.hidden=true;document.body.classList.remove("nav-open")}
-if(menuButton&&mobileMenu){
- menuButton.addEventListener("click",function(){const isOpen=menuButton.getAttribute("aria-expanded")==="true";menuButton.setAttribute("aria-expanded",String(!isOpen));menuButton.setAttribute("aria-label",isOpen?"Open navigation":"Close navigation");mobileMenu.hidden=isOpen;document.body.classList.toggle("nav-open",!isOpen)});
- mobileMenu.querySelectorAll("a").forEach(function(link){link.addEventListener("click",closeMenu)});
- document.addEventListener("keydown",function(event){if(event.key==="Escape"&&menuButton.getAttribute("aria-expanded")==="true"){closeMenu();menuButton.focus()}});
- document.addEventListener("click",function(event){if(!mobileMenu.hidden&&!event.target.closest(".site-header"))closeMenu()});
- window.matchMedia("(min-width: 821px)").addEventListener("change",function(event){if(event.matches)closeMenu()});
+const toggle=document.getElementById("nav-toggle");
+const mobile=document.getElementById("mobile-nav");
+function closeMenu(){if(!toggle||!mobile)return;toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open menu");mobile.hidden=true;document.body.classList.remove("menu-open")}
+if(toggle&&mobile){
+toggle.addEventListener("click",()=>{const open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));toggle.setAttribute("aria-label",open?"Open menu":"Close menu");mobile.hidden=open;document.body.classList.toggle("menu-open",!open)});
+mobile.querySelectorAll("a").forEach(link=>link.addEventListener("click",closeMenu));
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&toggle.getAttribute("aria-expanded")==="true"){closeMenu();toggle.focus()}});
+document.addEventListener("click",event=>{if(!mobile.hidden&&!event.target.closest(".site-header"))closeMenu()});
+window.matchMedia("(min-width: 821px)").addEventListener("change",event=>{if(event.matches)closeMenu()});
 }
-const filterButtons=Array.from(document.querySelectorAll(".filter"));
-const foodCards=Array.from(document.querySelectorAll(".food-card"));
-filterButtons.forEach(function(button){button.addEventListener("click",function(){const category=button.dataset.filter;filterButtons.forEach(function(item){const selected=item===button;item.classList.toggle("active",selected);item.setAttribute("aria-pressed",String(selected))});foodCards.forEach(function(card){card.hidden=category!=="all"&&card.dataset.category!==category})})});
-const revealItems=Array.from(document.querySelectorAll(".reveal"));
-if("IntersectionObserver" in window&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
- const observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add("is-visible");observer.unobserve(entry.target)}})},{threshold:.08,rootMargin:"0px 0px 40px 0px"});
- revealItems.forEach(function(item){observer.observe(item)});
-}else{revealItems.forEach(function(item){item.classList.add("is-visible")})}
-const progress=document.getElementById("scroll-progress");
-let scrollScheduled=false;
-function updateProgress(){const max=document.documentElement.scrollHeight-window.innerHeight;progress.style.width=(max>0?Math.min(100,Math.max(0,window.scrollY/max*100)):0)+"%";scrollScheduled=false}
-if(progress){window.addEventListener("scroll",function(){if(!scrollScheduled){scrollScheduled=true;requestAnimationFrame(updateProgress)}},{passive:true});window.addEventListener("resize",updateProgress);updateProgress()}
+const offers={
+coffee:{index:"01 / 03",eyebrow:"YOUR DAILY RITUAL",title:"Coffee<br><em>& more.</em>",description:"From the first espresso to an afternoon latte, take your coffee at your own pace. Matcha and chai are on the menu, too.",photo:"./assets/nomad/coffee.webp",alt:"Illustrative stock photograph of coffee in ceramic cups, not Nomad's own products"},
+food:{index:"02 / 03",eyebrow:"SOMETHING TO TUCK INTO",title:"A good<br><em>little bite.</em>",description:"A sandwich for lunch, or something savoury between stops. See what's available at the counter when you come in.",photo:"./assets/nomad/sandwich.webp",alt:"Illustrative stock photograph of toasted sandwiches, not Nomad's own products"},
+sweet:{index:"03 / 03",eyebrow:"GO ON, TREAT YOURSELF",title:"One more<br><em>little treat.</em>",description:"Coffee is better with something sweet on the side. Ask what pastries and baked treats are available today.",photo:"./assets/nomad/pastry.webp",alt:"Illustrative stock photograph of croissants, not Nomad's own pastries"}
+};
+const tabButtons=[...document.querySelectorAll(".offer-tab")];const offerImage=document.getElementById("offer-image");const offerIndex=document.getElementById("offer-index");const offerEyebrow=document.getElementById("offer-eyebrow");const offerName=document.getElementById("offer-name");const offerDescription=document.getElementById("offer-description");
+function changeOffer(key){const data=offers[key];if(!data)return;tabButtons.forEach(button=>{const active=button.dataset.offer===key;button.classList.toggle("is-active",active);button.setAttribute("aria-pressed",String(active))});offerIndex.textContent=data.index;offerEyebrow.textContent=data.eyebrow;offerName.innerHTML=data.title;offerDescription.textContent=data.description;offerImage.src=data.photo;offerImage.alt=data.alt}
+tabButtons.forEach(button=>button.addEventListener("click",()=>changeOffer(button.dataset.offer)));
+const reveals=[...document.querySelectorAll(".reveal")];
+if("IntersectionObserver" in window&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("is-visible");observer.unobserve(entry.target)}})},{threshold:.08,rootMargin:"0px 0px 45px 0px"});reveals.forEach(el=>observer.observe(el))}else reveals.forEach(el=>el.classList.add("is-visible"));
+const meter=document.getElementById("reading-progress");let queued=false;function updateMeter(){const remaining=document.documentElement.scrollHeight-innerHeight;meter.style.width=(remaining>0?Math.max(0,Math.min(100,scrollY/remaining*100)):0)+"%";queued=false}if(meter){addEventListener("scroll",()=>{if(!queued){queued=true;requestAnimationFrame(updateMeter)}},{passive:true});addEventListener("resize",updateMeter);updateMeter()}
 const year=document.getElementById("year");if(year)year.textContent=String(new Date().getFullYear());
