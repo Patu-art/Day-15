@@ -1,42 +1,46 @@
-name: Import Sicilian food photo references
+name: Import Sicilian Food Photography
 on:
   push:
     paths:
-      - ".github/workflows/import-sicilian-photos.yml"
+      - '.github/workflows/import-sicilian-photos.yml'
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
   import:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Download legally reusable food references
+      - name: Download editorial stock photos by Unsplash IDs
         shell: bash
         run: |
-          set -euo pipefail
           mkdir -p assets/photos
-          download() {
-            local name="$1"
-            local photo_id="$2"
-            local target="assets/photos/$name.jpg"
-            if curl -fLsS --retry 2 --max-time 100 -A "Mozilla/5.0" "https://unsplash.com/photos/$photo_id/download?force=true" -o "$target"; then
-              if file "$target" | grep -Eq "JPEG|PNG|Web/P"; then
-                echo "Verified $name"
-                return
-              fi
+          : > assets/photos/import-diagnostics.txt
+          fetch_photo() {
+            local key="$1" id="$2" url=""
+            echo "Fetching $key, Unsplash photo ID $id" | tee -a assets/photos/import-diagnostics.txt
+            url=$(curl --max-time 20 -fsSL -A "Mozilla/5.0" "https://unsplash.com/napi/photos/$id" | jq -r '.urls.raw // empty' 2>/dev/null || true)
+            if [ -z "$url" ]; then echo "FAIL no URL for $key" | tee -a assets/photos/import-diagnostics.txt; return; fi
+            if curl -fLsS --retry 2 --max-time 70 "$url?fm=webp&w=950&q=80" -o "assets/photos/$key.webp" && file "assets/photos/$key.webp" | grep -qi "Web/P"; then
+              echo "PASS $key" | tee -a assets/photos/import-diagnostics.txt
+            else
+              rm -f "assets/photos/$key.webp"
+              echo "FAIL download $key" | tee -a assets/photos/import-diagnostics.txt
             fi
-            echo "Image unavailable: $name" >&2
-            rm -f "$target"
           }
-          download hero-focaccia 38SpmDYNgFk
-          download focaccia-closeup UFv76iOCKmA
-          download arancini M3Vax7A5Hac
-          download cannoli zZj6oQwhhTs
-          download deli-counter l5Hqt9MJlv4
-      - name: Commit available references
+          fetch_photo focaccia-real UFv76iOCKmA
+          fetch_photo arancini-real M3Vax7A5Hac
+          fetch_photo cannoli-real zZj6oQwhhTs
+          cat assets/photos/import-diagnostics.txt
+      - name: Commit image assets and diagnostics
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/photos
-          git diff --cached --quiet || (git commit -m "Add locally hosted Sicilian food reference photos" && git push)
+          git add assets/photos/
+          if ! git diff --cached --quiet; then
+            git commit -m "Import verified Sicilian dish photos and log image retrieval"
+            git pull --rebase origin main
+            git push
+          fi
