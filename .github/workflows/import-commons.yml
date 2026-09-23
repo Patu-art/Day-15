@@ -33,6 +33,9 @@ jobs:
           download "Aubergine parmigiana focaccia, basil pesto, roasted tomato, mozzarella - Djanogly Café, Tate Britain 2026-03-24.jpg" "true-focaccia.jpg"
           download "Arancine.jpg" "true-arancini.jpg"
           download "Sicilian cannolo.jpg" "true-cannoli.jpg"
+          download "Potenza - Fabio's 2026-02-12.jpg" "focaccia-candidate.jpg"
+          download "Focaccia sandwiches for sale on the counter of Fabio's 2026-02-12.jpg" "focaccia-counter-candidate.jpg"
+          download "Cannoli siciliani (edited).jpg" "cannoli-candidate.jpg"
       - name: Commit photos and diagnostics
         shell: bash
         run: |
