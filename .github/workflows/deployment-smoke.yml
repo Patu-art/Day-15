@@ -1,0 +1,60 @@
+name: Check live GitHub Pages deployment
+on:
+  push:
+    paths:
+      - "index.html"
+      - "css/**"
+      - "js/**"
+      - "assets/nomad/**"
+      - ".github/workflows/deployment-smoke.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check public HTML CSS JS and image assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qa
+          base="https://patu-art.github.io/Day-15/"
+          status=1
+          for i in {1..8}; do
+            if curl -fLsS --connect-timeout 12 --max-time 22 -H "Cache-Control: no-cache" "$base?audit=$GITHUB_SHA&try=$i" -o qa/live-index.html &&
+               grep -q "A good" qa/live-index.html &&
+               grep -q "Nomad Coffee" qa/live-index.html &&
+               ! grep -qi "Marleo" qa/live-index.html; then
+              status=0
+              break
+            fi
+            echo "Deployment not ready; attempt $i" >&2
+            sleep 20
+          done
+          if [ "$status" -ne 0 ]; then
+            echo "FAILED: Live Pages did not serve the current Nomad content after retries." > qa/live-smoke.txt
+            exit 1
+          fi
+          for asset in css/style.css js/main.js assets/nomad/interior.webp assets/nomad/coffee.webp assets/nomad/sandwich.webp assets/nomad/pastry.webp; do
+            curl -fLsS --connect-timeout 12 --max-time 30 "$base$asset?audit=$GITHUB_SHA" -o /dev/null
+            echo "PASS $asset" >> qa/live-smoke.txt
+          done
+          grep -q "architectural-drawing" qa/live-index.html
+          echo "PASS: live HTML updated, browser assets reachable, correct project branding" >> qa/live-smoke.txt
+      - name: Record deployment verification
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ ! -s qa/live-smoke.txt ]; then echo "FAILED: Deployment verification did not complete. Inspect Actions log." > qa/live-smoke.txt; fi
+          {
+            printf '%s\n' '# Day 15 public deployment smoke test' ''
+            printf 'Checked at %s for revision %s.\n\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" "$GITHUB_SHA"
+            cat qa/live-smoke.txt
+          } > DEPLOYMENT_REPORT.md
+          git add DEPLOYMENT_REPORT.md
+          git diff --cached --quiet || (git commit -m "Record public Nomad Pages deployment status" && git pull --rebase origin main && git push)
