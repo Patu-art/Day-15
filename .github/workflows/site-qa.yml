@@ -1,0 +1,97 @@
+name: SITEPRO — Nomad Browser QA
+on:
+  push:
+    paths:
+      - "index.html"
+      - "css/**"
+      - "js/**"
+      - "assets/nomad/**"
+      - ".github/workflows/site-qa.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install browser
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+      - name: Test responsive layout and interactions
+        shell: bash
+        run: |
+          mkdir -p qa/screenshots
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/nomad-http.log 2>&1 &
+          sleep 2
+          node <<'NODE' > qa/qa-run.log 2>&1
+          const {chromium}=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const errors=[];
+            for(const width of [1440,1024,768,390,375,320]){
+              const page=await browser.newPage({viewport:{width,height:850},deviceScaleFactor:1});
+              page.on('pageerror',e=>errors.push(width+' JS '+e.message));
+              const response=await page.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
+              if(response.status()!==200)errors.push(width+' HTTP '+response.status());
+              await page.evaluate(async()=>{document.querySelectorAll('img[loading="lazy"]').forEach(i=>i.loading='eager');await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})))});
+              const state=await page.evaluate(()=>({
+                overflow:document.documentElement.scrollWidth-window.innerWidth,
+                images:[...document.images].map(i=>({source:i.getAttribute('src'),loaded:i.complete&&i.naturalWidth>0})),
+                css:getComputedStyle(document.querySelector('.hero')).backgroundColor,
+                missingAnchors:[...document.querySelectorAll('a[href^="#"]')].filter(a=>!document.getElementById(a.getAttribute('href').slice(1))).map(a=>a.getAttribute('href'))
+              }));
+              if(state.overflow>1){
+                const offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].map(e=>({tag:e.tagName,cls:typeof e.className==='string'?e.className.slice(0,40):'svg',right:Math.round(e.getBoundingClientRect().right)})).filter(e=>e.right>innerWidth+1).slice(0,20));
+                errors.push(width+' overflow '+state.overflow+' offenders '+JSON.stringify(offenders));
+              }
+              if(state.images.some(i=>!i.loaded))errors.push(width+' image fail '+JSON.stringify(state.images.filter(i=>!i.loaded)));
+              if(state.images.length!==4)errors.push(width+' expected 4 loaded page image elements');
+              if(state.missingAnchors.length)errors.push(width+' unresolved anchors '+state.missingAnchors);
+              if(!state.css.startsWith('rgb(33, 59, 50)'))errors.push(width+' CSS missing '+state.css);
+              await page.locator('.offer-tab[data-offer="food"]').click();
+              if(!(await page.locator('#offer-name').innerText()).includes('A good'))errors.push(width+' food selector failed');
+              await page.locator('.offer-tab[data-offer="sweet"]').click();
+              if(!(await page.locator('#offer-name').innerText()).includes('One more'))errors.push(width+' sweet selector failed');
+              await page.locator('.offer-tab[data-offer="coffee"]').click();
+              if(width<=820){
+                await page.locator('#nav-toggle').click();
+                if(await page.locator('#nav-toggle').getAttribute('aria-expanded')!=='true')errors.push(width+' nav open failed');
+                await page.keyboard.press('Escape');
+                if(await page.locator('#nav-toggle').getAttribute('aria-expanded')!=='false')errors.push(width+' Escape close failed');
+                await page.locator('#nav-toggle').click();
+                await page.locator('.mobile-nav a[href="#visit"]').click();
+                if(await page.locator('#nav-toggle').getAttribute('aria-expanded')!=='false')errors.push(width+' link close failed');
+              }
+              await page.evaluate(()=>{document.querySelectorAll('.reveal').forEach(e=>e.classList.add('is-visible'));document.documentElement.style.scrollBehavior='auto';window.scrollTo(0,0)});
+              await page.waitForTimeout(100);
+              if(width===1440){await page.screenshot({path:'qa/screenshots/desktop.jpg',type:'jpeg',quality:45,fullPage:true,animations:'disabled'});await page.screenshot({path:'qa/screenshots/desktop-fold.jpg',type:'jpeg',quality:65,animations:'disabled'});}
+              if(width===390){await page.screenshot({path:'qa/screenshots/mobile.jpg',type:'jpeg',quality:48,fullPage:true,animations:'disabled'});await page.screenshot({path:'qa/screenshots/mobile-fold.jpg',type:'jpeg',quality:65,animations:'disabled'});}
+              console.log('CHECK',width,JSON.stringify({overflow:state.overflow,images:state.images.length,css:state.css}));
+              await page.close();
+            }
+            await browser.close();
+            if(errors.length)throw Error(errors.join('\n'));
+            console.log('PASS Nomad UI at 1440,1024,768,390,375,320; all four images; no overflow; JS; anchors; mobile nav; selectors.');
+          })().catch(e=>{console.error(e);process.exit(1)})
+          NODE
+      - name: Publish QA result and previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nomad-sitepro-browser-report
+          path: |
+            qa/qa-run.log
+            qa/screenshots/
+          if-no-files-found: warn
+      - name: Commit passing QA report
+        if: success()
+        shell: bash
+        run: |
+          printf '%s\n' '# Nomad website browser QA — PASS' '' 'Chromium tested 1440, 1024, 768, 390, 375 and 320 px.' 'All four locally stored photos, CSS load, anchor links, functional coffee selector, keyboard and mobile navigation, no JS exceptions or horizontal overflow.' 'Concept photos are not actual Nomad Coffee venue or products. Owner approval and live-site check required before handover.' > QA_REPORT.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add QA_REPORT.md
+          git diff --cached --quiet || (git commit -m "Record passing responsive Nomad site QA" && git pull --rebase origin main && git push)
