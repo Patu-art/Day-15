@@ -3,6 +3,10 @@ on:
   push:
     paths:
       - ".github/workflows/site-qa.yml"
+      - "index.html"
+      - "css/**"
+      - "js/**"
+      - "assets/photos/**"
 permissions:
   contents: write
 jobs:
@@ -39,7 +43,7 @@ jobs:
                 css:getComputedStyle(document.querySelector('.hero')).backgroundColor,
                 pageTitle:document.title
               }));
-              if(state.overflow>2)errors.push(width+' horizontal overflow '+state.overflow+'px');
+              if(state.overflow>2){ const offenders=await page.evaluate(()=>Array.from(document.querySelectorAll("body *")).map(e=>({tag:e.tagName,cls:String(e.className).slice(0,65),right:Math.round(e.getBoundingClientRect().right),left:Math.round(e.getBoundingClientRect().left)})).filter(o=>o.right>window.innerWidth+1||o.left< -1).slice(0,20)); errors.push(width+" horizontal overflow "+state.overflow+"px offenders="+JSON.stringify(offenders)); }
               if(state.img.some(i=>!i.ok))errors.push(width+' images missing '+JSON.stringify(state.img.filter(i=>!i.ok)));
               if(!state.css||state.css==='rgba(0, 0, 0, 0)')errors.push(width+' stylesheet not applied');
               await page.locator('.filter[data-filter="sweet"]').click();
