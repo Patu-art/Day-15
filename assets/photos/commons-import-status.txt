@@ -1,3 +1,6 @@
 PASS true-focaccia.jpg
 PASS true-arancini.jpg
 PASS true-cannoli.jpg
+PASS focaccia-candidate.jpg
+PASS focaccia-counter-candidate.jpg
+PASS cannoli-candidate.jpg
